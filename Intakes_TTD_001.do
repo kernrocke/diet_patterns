@@ -11,7 +11,7 @@ cls
 **	Sub-Project:	Sex-Differences in Reporting of Energy Intake
 **  Analyst:		Kern Rocke
 **	Date Created:	16/06/2020
-**	Date Modified: 	16/06/2020
+**	Date Modified: 	17/06/2020
 **  Algorithm Task: Data Cleaning and Table 1 Analysis
 
 
@@ -31,7 +31,7 @@ local datapath "X:/OneDrive - The University of the West Indies"
 */
 *MAC OS
 local datapath "//Users/kernrocke/Documents/Projects"
-*local datapath "X:/The University of the West Indies/DataGroup - repo_data/data_p145"
+local exportpath "/Users/kernrocke/OneDrive - The University of the West Indies"
 cd "/Users/kernrocke/OneDrive - The University of the West Indies"
 
 /*
@@ -41,6 +41,8 @@ residing in a Caribbean Small Island Developing State.
 
 use "`datapath'/Energy Expenditure/Preliminary Analysis/ISPAH1.dta"
 
+*Minor Data cleaning and set up
+
 *Create miss-reporting variable
 
 gen miss_report = .
@@ -49,6 +51,19 @@ replace miss_report = 1 if ratio_1 > 0
 label var miss_report "Miss-reporting energy intake"
 label define miss_report 0"Plausible" 1"Miss-reporting"
 label value miss_report miss_report
+
+*Create new age groups (18-40 and 41-65)
+drop age_grp
+gen age_grp = .
+replace age_grp = 1 if age <41
+replace age_grp = 2 if age >40 
+label var age_grp "Age Groups"
+label define age_grp 1"18-40 years" 2 "40-65 years", modify
+label value age_grp age_grp
+
+*Educaton Categories
+label define education_new 0"Primary/Secondary/Technical" 1"Tertiary"
+label value education_new education_new
 
 *Table 1 Baseline Characteristics between male and female
 
@@ -195,7 +210,7 @@ replace pop_tt2_per = -pop_tt2_per
 
 restore
 
-
+save "`exportpath'/Manuscripts/Diet Intake/Data/Diet_TTD_v1", replace
 
 	
 	
